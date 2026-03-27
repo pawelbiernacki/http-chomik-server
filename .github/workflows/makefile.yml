@@ -27,7 +27,7 @@ jobs:
       run: sudo apt-get update && sudo apt-get install -y libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev
 
     - name: Build libchomik
-      run: cd ./chomik && autoreconf -i && ./configure --enable-chomik-servers --enable-sdl-chomik && make
+      run: cd ./chomik && autoreconf -fiv && ./configure --enable-chomik-servers --enable-sdl-chomik && make
 
     - name: Regenerate autoconf files
       run: autoreconf -i
