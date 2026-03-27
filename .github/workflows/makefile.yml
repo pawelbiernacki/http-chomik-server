@@ -16,6 +16,9 @@ jobs:
 
     - name: Install Autoconf
       run: sudo apt-get update && sudo apt-get install -y autoconf
+      
+    - name: Install dependencies
+      run: sudo apt-get update && sudo apt-get install -y autoconf libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev
 
     - name: Checkout chomik dependency
       uses: actions/checkout@v4
@@ -29,8 +32,8 @@ jobs:
     - name: Install libchomik
       run: cd ./chomik && make install
 
-    - name: Install SDL2 dependencies
-      run: sudo apt-get update && sudo apt-get install -y libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev
+    - name: configure
+      run: ./configure --enable-chomik-servers --enable-sdl-chomik
 
     - name: configure
       run: ./configure
