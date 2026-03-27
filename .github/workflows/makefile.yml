@@ -16,9 +16,6 @@ jobs:
 
     - name: Install Autoconf
       run: sudo apt-get update && sudo apt-get install -y autoconf automake m4 libtool perl
-      
-    - name: Install dependencies
-      run: sudo apt-get update && sudo apt-get install -y libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev
 
     - name: Checkout chomik dependency
       uses: actions/checkout@v4
@@ -27,10 +24,16 @@ jobs:
         path: ./chomik
 
     - name: Build libchomik
-      run: cd ./chomik && ./configure && make
+      run: cd ./chomik && autoreconf -i && ./configure && make
 
     - name: Install libchomik
       run: cd ./chomik && make install
+
+    - name: Regenerate autoconf files
+      run: autoreconf -i
+      
+    - name: Install dependencies
+      run: sudo apt-get update && sudo apt-get install -y libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev
 
     - name: configure
       run: ./configure --enable-chomik-servers --enable-sdl-chomik
