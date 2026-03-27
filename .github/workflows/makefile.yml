@@ -14,6 +14,18 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: Checkout chomik dependency
+      uses: actions/checkout@v4
+      with:
+        repository: pawelbiernacki/chomik
+        path: ./chomik
+
+    - name: Build libchomik
+      run: cd ./chomik && ./configure && make
+
+    - name: Install libchomik
+      run: cd ./chomik && make install
+
     - name: configure
       run: ./configure
 
