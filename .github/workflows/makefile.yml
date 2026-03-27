@@ -24,7 +24,7 @@ jobs:
         path: ./chomik
 
     - name: Build libchomik
-      run: cd ./chomik && autoreconf -i && ./configure && make
+      run: cd ./chomik && autoreconf -i && ./configure --enable-chomik-servers --enable-sdl-chomik && make
 
     - name: Install libchomik
       run: cd ./chomik && make install
@@ -36,13 +36,13 @@ jobs:
       run: sudo apt-get update && sudo apt-get install -y libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev
 
     - name: configure
-      run: ./configure --enable-chomik-servers --enable-sdl-chomik
-
-    - name: configure
       run: ./configure
 
     - name: Install dependencies
       run: make
+
+    - name: Install
+      run: sudo make install
 
     - name: Run check
       run: make check
