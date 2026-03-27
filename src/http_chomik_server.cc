@@ -1,6 +1,6 @@
 #include "config.h"
 #include <http_chomik.h>
-#include "http_server_chomik.h"
+#include "http_chomik_server.h"
 #include <cstring>
 #include <iostream>
 #include <iomanip>
@@ -48,23 +48,23 @@
 #endif
 
 
-int my_port = 5001;
-bool my_port_known = false;
-
-
-void http_server_chomik::machine::create_predefined_variables()
+void http_chomik_server::machine::create_predefined_variables()
 {
     chomik::machine::create_predefined_variables();
 }
 
 
-bool http_server_chomik::machine::get_is_user_defined_executable(const chomik::signature & s) const
+bool http_chomik_server::machine::get_is_user_defined_executable(const chomik::signature & s) const
 {
-    if (s.get_vector_of_items().size() == 3)
+    if (s.get_vector_of_items().size() == 7)
     {
         if (s.get_vector_of_items()[0]->get_it_is_identifier("http")
-            && s.get_vector_of_items()[1]->get_it_is_identifier("server")
-            && s.get_vector_of_items()[2]->get_it_is_identifier("loop"))
+			&& s.get_vector_of_items()[1]->get_it_is_identifier("chomik")
+			&& s.get_vector_of_items()[2]->get_it_is_identifier("server")
+            && s.get_vector_of_items()[3]->get_it_is_identifier("loop")
+			&& s.get_vector_of_items()[4]->get_it_is_identifier("at")
+			&& s.get_vector_of_items()[5]->get_it_is_identifier("port")
+			&& s.get_vector_of_items()[6]->get_it_is_integer())
         {
             return true;
         }
@@ -72,9 +72,9 @@ bool http_server_chomik::machine::get_is_user_defined_executable(const chomik::s
     return false;
 }
 
-void http_server_chomik::machine::http_server_loop()
+void http_chomik_server::machine::http_server_loop(int my_port)
 {
-    HTTP_CHOMIK_LOG_NOTICE("http_chomik started.");
+    HTTP_CHOMIK_LOG_NOTICE("http_chomik_server started.");
     pid_t f, pid;
 
     f = fork();
@@ -115,15 +115,20 @@ void http_server_chomik::machine::http_server_loop()
     http_chomik::server::do_processing(my_port, my_wrapper);
 }
 
-void http_server_chomik::machine::execute_user_defined_executable(const chomik::signature & s)
+void http_chomik_server::machine::execute_user_defined_executable(const chomik::signature & s)
 {
-    if (s.get_vector_of_items().size() == 3)
+    if (s.get_vector_of_items().size() == 7)
     {
         if (s.get_vector_of_items()[0]->get_it_is_identifier("http")
-            && s.get_vector_of_items()[1]->get_it_is_identifier("server")
-            && s.get_vector_of_items()[2]->get_it_is_identifier("loop"))
+			&& s.get_vector_of_items()[1]->get_it_is_identifier("chomik")
+            && s.get_vector_of_items()[2]->get_it_is_identifier("server")
+            && s.get_vector_of_items()[3]->get_it_is_identifier("loop")
+			&& s.get_vector_of_items()[4]->get_it_is_identifier("at")
+			&& s.get_vector_of_items()[5]->get_it_is_identifier("port")
+			&& s.get_vector_of_items()[6]->get_it_is_integer()
+		)
         {
-            http_server_loop();
+            http_server_loop(s.get_vector_of_items()[6]->get_value_integer());
         }
     }
 }
@@ -142,22 +147,9 @@ int main(int argc, char *argv[])
     for (int a=1; a < argc; a++)
     {
         std::string option(argv[a]);
-        if (option=="-p" || option=="--port")
-        {
-            if (a == argc-1)
-            {
-                std::cerr << "option -p or --port require a port number\n";
-                return -1;
-            }
-            std::string port(argv[a+1]);
-            a++;
-            my_port = std::stoi(port);
-            my_port_known = true;
-        }
-        else
         if (option == "-h" || option == "--help")
         {
-            std::cout << "usage: " << argv[0] << " [-p|--port <port>] [-h|--help] <filename>\n";
+            std::cout << "usage: " << argv[0] << " [-h|--help] <filename>\n";
             return 0;
         }
         else
@@ -166,12 +158,6 @@ int main(int argc, char *argv[])
         }
     }
 
-    if (!my_port_known)
-    {
-        std::cerr << "unknown port\n";
-        return_value = 1;
-    }
-    else
     if (filename == "")
     {
         std::cerr << "usage: " << argv[0] << " <filename>\n";
@@ -181,13 +167,12 @@ int main(int argc, char *argv[])
     {
         if (the_parser.parse(filename.c_str()) == 0)
         {
-            http_server_chomik::machine m;
+            http_chomik_server::machine m;
             m.create_predefined_types();
             m.create_predefined_variables();
             m.create_predefined_streams();
 
             the_program.execute(m);
-
 
             chomik::generic_name gn;
             gn.add_generic_name_item(std::make_shared<chomik::identifier_name_item>("the"));

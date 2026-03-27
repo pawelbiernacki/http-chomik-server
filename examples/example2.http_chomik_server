@@ -1,0 +1,6 @@
+#!/usr/local/bin/http_chomik_server
+
+<print "Hello! This is http_chomik_server.">;
+
+<http chomik server loop at port 5001>;
+

@@ -2,8 +2,8 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.72])
-AC_INIT([http_chomik], [0.0.0], [pawel.f.biernacki@gmail.com])
-AC_CONFIG_SRCDIR([inc/http_server_chomik.h])
+AC_INIT([http-chomik-server], [0.0.0], [pawel.f.biernacki@gmail.com])
+AC_CONFIG_SRCDIR([inc/http_chomik_server.h])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE()
 

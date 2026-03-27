@@ -3,13 +3,13 @@
 
 #include <chomik.h>
 
-namespace http_server_chomik
+namespace http_chomik_server
 {
 
     class machine: public chomik::machine
     {
     protected:
-        virtual void http_server_loop();
+        virtual void http_server_loop(int my_port);
 
     public:
         machine() = default;

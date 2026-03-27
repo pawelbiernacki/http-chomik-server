@@ -1,3 +1,3 @@
 
 
-noinst_HEADERS = http_server_chomik.h
+noinst_HEADERS = http_chomik_server.h
