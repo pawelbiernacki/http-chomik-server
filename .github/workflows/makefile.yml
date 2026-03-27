@@ -29,9 +29,6 @@ jobs:
     - name: Build libchomik
       run: cd ./chomik && autoreconf -i && ./configure --enable-chomik-servers --enable-sdl-chomik && make
 
-    - name: Install libchomik
-      run: cd ./chomik && make install
-
     - name: Regenerate autoconf files
       run: autoreconf -i
       
@@ -40,9 +37,6 @@ jobs:
 
     - name: Build
       run: make
-
-    - name: Install
-      run: sudo make install
 
     - name: Run check
       run: make check
